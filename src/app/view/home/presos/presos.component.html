@@ -1,0 +1,14 @@
+<div class="column design">
+    <h2><a href="https://speakerdeck.com/tpryan">Presentations <span class="icon">&#59160;</span></a></h2>
+    <div *ngFor="let preso of presos">
+        <article class="preso">
+            <h1><a href='{{preso.link}}'>{{preso.title}}</a></h1> 
+            <time>{{preso.published | date: 'MMMM d, yyyy'}}</time>
+            <p [innerHTML]='preso.content'></p>
+        </article>
+    </div>
+    <p class="externalref">View more on <a href="http://www.speakerdeck.net/tpryan">speakerdeck.com</a>.</p>
+</div>
+
+
+

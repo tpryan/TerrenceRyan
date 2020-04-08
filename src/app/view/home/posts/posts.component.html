@@ -1,0 +1,11 @@
+<div class="blog">
+    <h2><a href="/blog">Blog <span class="icon">&#59194;</span></a></h2>
+    <div *ngFor="let post of posts">
+        <article class="post">
+            <h1><a href="{{post.link}}">{{post.title}}</a></h1> 
+            <time>{{post.published | date: 'MMMM d, yyyy'}}</time>
+            <p [innerHTML]='post.content'></p>
+        </article>
+    </div>
+    <p class="externalref">View more on <a href="/blog">my blog</a>.</p>
+</div>    

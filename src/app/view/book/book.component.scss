@@ -1,0 +1,38 @@
+img{
+    width: auto;
+    float:right;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.picture{
+    border: 0;
+    max-width: 300px;
+    float:right;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    box-shadow: none;
+}
+
+blockquote{
+        font-style: italic;
+        margin-left: 0;
+    }
+
+.quotesource{
+    border-bottom: 1px dotted #ccc;
+    margin-bottom: 50px;
+    padding-bottom: 20px;
+
+    .source, .title, .company{
+        display: block;
+    }
+}
+
+
+@media screen and (max-width: 799px) {
+    .picture{
+        width: 100%;
+        max-width: 100%;
+    }    
+}

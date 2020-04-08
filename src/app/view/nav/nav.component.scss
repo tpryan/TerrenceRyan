@@ -1,0 +1,47 @@
+nav{
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 20px;
+    ul{
+        display: flex;
+        padding:0;
+        margin: 0;
+
+        li{
+            list-style: none;
+            display: block;
+            padding-left: 5px;
+            padding-right: 15px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            margin: 0;
+            a{
+                text-decoration: none;
+                font-family: "Proxima Nova Extra Condensed";
+                font-weight: 600;
+                font-size: 32px;
+                &:hover{
+                    color: #ccc;
+                }
+            }
+
+            
+        }
+    }
+    
+    
+}
+
+@media screen and (max-width: 799px) {
+    nav{
+        ul{
+    
+            li{
+                a{
+                    font-size: 22px;
+                }
+            }
+        }
+    }    
+}

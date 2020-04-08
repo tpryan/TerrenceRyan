@@ -1,0 +1,7 @@
+
+@include fontface ("assets/fonts",entypo);
+@include fontface ("assets/fonts",entypo-social);
+
+.icon{
+	font-family: entypo-social, entypo;
+}

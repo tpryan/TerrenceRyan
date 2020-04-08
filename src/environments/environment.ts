@@ -3,7 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  project_url: 'https://api.github.com/users/tpryan/repos?sort=pushed',
+  preso_url: "http://127.0.0.1:8080/presos",
+  posts_url: "http://127.0.0.1:8080/posts"
 };
 
 /*

@@ -1,0 +1,43 @@
+
+article{
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    border-bottom: 1px dotted #ccc;
+
+    h1{
+        padding:0 0 0 0;
+        margin: 0 0 10px 0;
+
+    }
+    p{
+        padding:0 0 0 0;
+        margin: 10px 0 10px 0;
+        font-size: 20px;
+        font-weight: 100;
+    }
+    
+
+    time{
+        font-weight: 600;
+        font-size: 20px;
+        padding:0;
+        margin: 0;
+
+    }
+}
+
+::ng-deep img{
+    width: 100%;
+    box-shadow: 0 1px 1px 0 rgba(60,64,67,0.30), 0 1px 1px 1px rgba(60,64,67,0.15);
+}
+
+::ng-deep p{
+    padding:0 0 0 0;
+        margin: 5px 0 10px 0;
+        font-size: 20px;
+        font-weight: 100;
+}
+
+a{
+    color:  #1A72AF;
+}
