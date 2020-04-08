@@ -12,6 +12,7 @@ import (
 
 var postJSON string
 var presoJSON string
+var repoJSON string
 
 func main() {
 
@@ -24,6 +25,7 @@ func main() {
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/healthz", handleHealth)
 	http.HandleFunc("/presos", handlePresos)
+	http.HandleFunc("/repos", handleRepos)
 	http.HandleFunc("/posts", handlePosts)
 
 	log.Printf("Listening on port %s", port)
@@ -34,7 +36,7 @@ func main() {
 
 func handlePresos(w http.ResponseWriter, r *http.Request) {
 	if presoJSON == "" {
-		presoXML, err := getXML("https://speakerdeck.com/tpryan.atom")
+		presoXML, err := get("https://speakerdeck.com/tpryan.atom")
 		if err != nil {
 			writeError(w, err)
 		}
@@ -55,10 +57,23 @@ func handlePresos(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func handleRepos(w http.ResponseWriter, r *http.Request) {
+	if repoJSON == "" {
+		temp, err := get("https://api.github.com/users/tpryan/repos?sort=pushed")
+		if err != nil {
+			writeError(w, err)
+		}
+		repoJSON = string(temp)
+	}
+
+	writeResponse(w, http.StatusOK, repoJSON)
+	return
+}
+
 func handlePosts(w http.ResponseWriter, r *http.Request) {
 
 	if postJSON == "" {
-		postXML, err := getXML("https://tpryan.blog/feed/")
+		postXML, err := get("https://tpryan.blog/feed/")
 		if err != nil {
 			writeError(w, err)
 		}
@@ -83,7 +98,7 @@ func handleHealth(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func getXML(url string) ([]byte, error) {
+func get(url string) ([]byte, error) {
 
 	resp, err := http.Get(url)
 	if err != nil {

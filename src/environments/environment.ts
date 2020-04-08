@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  project_url: 'https://api.github.com/users/tpryan/repos?sort=pushed',
+  project_url: 'http://127.0.0.1:8080/repos',
   preso_url: "http://127.0.0.1:8080/presos",
   posts_url: "http://127.0.0.1:8080/posts"
 };
