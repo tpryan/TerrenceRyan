@@ -21,4 +21,7 @@ image: prod
 serve: 
 	docker run --name=$(APPNAME) -d -P -p 8080:8080 $(APPNAME)
 
-	
+dev:
+	(trap 'kill 0' SIGINT; \
+	cd $(BASEDIR)/prod && go run main.go & \
+	cd $(BASEDIR)/frontend && ng serve --open )	
