@@ -109,3 +109,32 @@
 		}
 	}
 }
+
+@media screen and (max-width: 799px) {
+	.resume{
+		h2{
+			padding: 15px 0 10px 25%;
+			padding-left: -moz-calc(0% + 0px);
+			padding-left: -webkit-calc(0% + 0px);
+			padding-left: -o-calc(0% + 0px);
+			padding-left: calc(0% + 0px);
+		}
+
+		.toplevel{
+			padding: 15px 0 10px 25%;
+			padding-left: -moz-calc(0% + 12px);
+			padding-left: -webkit-calc(0% + 12px);
+			padding-left: -o-calc(0% + 12px);
+			padding-left: calc(0% + 12px);
+		}
+	}
+	.blank{
+		display: none;
+	}
+	.position{
+		.details{
+			vertical-align: top;
+			width: 100%;
+		}
+	}
+}
