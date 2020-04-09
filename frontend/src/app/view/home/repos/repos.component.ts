@@ -17,7 +17,7 @@ export class ReposComponent implements OnInit {
 
   getRepos(): void {
     this.repoService.getRepos()
-        .subscribe(repos => this.repos =  repos.slice(1, 4));
+        .subscribe(repos => this.repos =  repos.slice(1, 6));
   }
     
 

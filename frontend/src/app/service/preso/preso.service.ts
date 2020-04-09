@@ -9,6 +9,7 @@ export class Preso {
   public title: string
   public link: string
   public content: string
+  public published:Date
 }
 
 @Injectable({
