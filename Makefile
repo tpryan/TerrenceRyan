@@ -25,3 +25,6 @@ dev:
 	(trap 'kill 0' SIGINT; \
 	cd $(BASEDIR)/prod && go run main.go & \
 	cd $(BASEDIR)/frontend && ng serve --open )	
+
+build:
+	gcloud builds submit --config cloudbuild.yaml .
