@@ -18,7 +18,7 @@ article{
     
 
     time{
-        font-weight: 600;
+        font-weight: 400;
         font-size: 20px;
         padding:0;
         margin: 0;
@@ -31,11 +31,12 @@ article{
     box-shadow: 0 1px 1px 0 rgba(60,64,67,0.30), 0 1px 1px 1px rgba(60,64,67,0.15);
 }
 
-::ng-deep p{
+::ng-deep .preso p{
     padding:0 0 0 0;
         margin: 5px 0 10px 0;
         font-size: 20px;
         font-weight: 100;
+        
 }
 
 a{

@@ -21,7 +21,7 @@
 
 
 body{
-  font-family: "Proxima Nova";
+  font-family: proxima-nova, sans-serif;
   font-weight: 100;
   
 }
@@ -29,10 +29,10 @@ body{
 
 header{
   h1{
-    font-family: "Proxima Nova";
+    font-family: proxima-nova, sans-serif;
     font-weight: 800;
     strong{
-      font-family: "Proxima Nova";
+      font-family: proxima-nova, sans-serif;
       font-weight: 800;
     }
   }
@@ -45,13 +45,13 @@ p{
 }
 
 h1{
-  font-family: "Proxima Nova Extra Condensed";
+  font-family: proxima-nova-extra-condensed, sans-serif;
   font-weight: 500;
   margin-top: 10px;
 }
 
 h2{
-  font-family: "Proxima Nova Condensed";
+  font-family: proxima-nova-condensed, sans-serif;
   font-weight: 600;
   margin-bottom: 20px;
   margin-top: 10px
