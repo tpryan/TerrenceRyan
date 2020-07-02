@@ -50,4 +50,10 @@ perms: env
   	--role roles/iam.serviceAccountUser
 	-gcloud projects add-iam-policy-binding $(PROJECT) \
   	--member serviceAccount:$(PROJECTNUMBER)@cloudbuild.gserviceaccount.com \
-  	--role roles/iam.serviceAccountUser   	     	
+  	--role roles/iam.serviceAccountUser   	 
+
+function: env
+	gcloud services enable cloudfunctions.googleapis.com
+	-gcloud functions deploy subscribeMailgun --trigger-topic cloud-builds \
+	--runtime nodejs10 --set-env-vars GCLOUD_PROJECT=$(PROJECT) \
+	--source $(BASEDIR)/functions/email	--allow-unauthenticated	      	

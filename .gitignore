@@ -1,4 +1,3 @@
-
 prod/static/*
 prod/main
 functions/email/config.json

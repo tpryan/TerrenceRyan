@@ -46,11 +46,15 @@ const createEmail = (build) => {
     weight = '900';
   }
 
+  let buildlink = `<a href="${build.logUrl}">${build.id}</a>`;
+  
   const duration = humanizeDuration(new Date(build.finishTime) - new Date(build.startTime));
+  
   
   let msgHtml = `<p><a href="${build.logUrl}">Latest build</a> finished with status <span style="color: ${color}; font-weight: ${weight}">${build.status} </span>, in ${duration}.</p>
                 <p>View it here: <a href="https://${process.env.GCLOUD_PROJECT}.appspot.com">https://${process.env.GCLOUD_PROJECT}.appspot.com</a></p>
                 `;
+  
   
   const message = {
     from: config.MAILGUN_FROM,
@@ -59,6 +63,5 @@ const createEmail = (build) => {
     text: "Build complete",
     html: msgHtml
   };
-  
   return message;
 };
