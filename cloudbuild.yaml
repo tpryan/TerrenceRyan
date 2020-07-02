@@ -28,7 +28,8 @@ steps:
             'GCLOUD_PROJECT=$PROJECT_ID',
             '-q'
           ]
-  - name: 'gcr.io/cloud-builders/npm'
+  - name: 'node'
+    entrypoint : 'npm'
     args: ['install']
     dir: "frontend"
   - name: 'gcr.io/$PROJECT_ID/ng:latest'
