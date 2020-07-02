@@ -1,6 +1,11 @@
 BASEDIR = $(shell pwd)
 APPNAME = terrenceryan
+PROJECT = terrenceryan-com
+PROJECTNUMBER=$(shell gcloud projects list --filter="$(PROJECT)" \
+			--format="value(PROJECT_NUMBER)")
 
+env:
+	gcloud config set project $(PROJECT)
 
 angular:
 	cd frontend && ng build --prod
@@ -26,5 +31,23 @@ dev:
 	cd $(BASEDIR)/prod && go run main.go & \
 	cd $(BASEDIR)/frontend && ng serve --open )	
 
-build:
+build: env
 	gcloud builds submit --config cloudbuild.yaml .
+
+services: env
+	-gcloud services enable cloudbuild.googleapis.com
+	-gcloud services enable cloudfunctions.googleapis.com
+
+perms: env
+	-gcloud projects add-iam-policy-binding $(PROJECT) \
+  	--member serviceAccount:$(PROJECTNUMBER)@cloudbuild.gserviceaccount.com \
+  	--role roles/cloudfunctions.admin
+	-gcloud projects add-iam-policy-binding $(PROJECT) \
+  	--member serviceAccount:$(PROJECT)@appspot.gserviceaccount.com \
+  	--role roles/cloudfunctions.admin  
+	-gcloud projects add-iam-policy-binding $(PROJECT) \
+  	--member serviceAccount:$(PROJECT)@appspot.gserviceaccount.com \
+  	--role roles/iam.serviceAccountUser
+	-gcloud projects add-iam-policy-binding $(PROJECT) \
+  	--member serviceAccount:$(PROJECTNUMBER)@cloudbuild.gserviceaccount.com \
+  	--role roles/iam.serviceAccountUser   	     	
