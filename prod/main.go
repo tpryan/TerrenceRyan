@@ -320,7 +320,7 @@ func (c *Cache) Get(key string) (string, error) {
 		return "", err
 	}
 
-	c.log("Successfully retrieved content from cache as key :%s", key)
+	c.log("Successfully retrieved content from cache as key: %s", key)
 
 	return s, nil
 }
