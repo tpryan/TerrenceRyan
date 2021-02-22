@@ -19,6 +19,9 @@ steps:
   - name: 'gcr.io/$PROJECT_ID/ng:latest'
     args: ["build", "--prod"]
     dir: "frontend"
+  - name: 'golang'
+    args: ["go", "build", "-o", "main", "main.go"]
+    dir: "prod"  
   - name: 'gcr.io/cloud-builders/docker'
     dir: "prod"
     args: [
@@ -33,6 +36,8 @@ steps:
             'push', 
             'gcr.io/$PROJECT_ID/terrenceryan'
           ]
+
+
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: "gcloud"
     args: [
@@ -40,13 +45,18 @@ steps:
             'run', 
             'deploy', 
             'terrenceryan', 
-            '--image', 
-            'gcr.io/$PROJECT_ID/terrenceryan', 
-            '--region', 
-            'us-central1',
+            '--image', 'gcr.io/$PROJECT_ID/terrenceryan:latest', 
+            '--region', 'us-central1',
             '--platform', 
             'managed', 
-            '--quiet'
+            '--quiet',
+            '--vpc-connector','redisconnector', 
+            '--set-env-vars','REDISHOST=$$REDISIP,REDISPORT=6379'
           ]
+    secretEnv: ['REDISIP']      
+availableSecrets:
+  secretManager:
+  - versionName: projects/terrenceryan-com/secrets/redisip/versions/latest
+    env: 'REDISIP'          
 images:
   - gcr.io/$PROJECT_ID/terrenceryan
