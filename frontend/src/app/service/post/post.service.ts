@@ -46,6 +46,6 @@ export class PostService {
   }
 
   private log(message: string) {
-    this.messageService.add(`HeroService: ${message}`);
+    this.messageService.add(`PostService: ${message}`);
   }
 }

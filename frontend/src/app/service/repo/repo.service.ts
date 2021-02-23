@@ -42,6 +42,6 @@ export class RepoService {
   }
 
   private log(message: string) {
-    this.messageService.add(`HeroService: ${message}`);
+    this.messageService.add(`RepoService: ${message}`);
   }
 }
