@@ -1,21 +1,24 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
-	"encoding/xml"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gomodule/redigo/redis"
+	"github.com/google/go-github/v33/github"
+	"github.com/mmcdole/gofeed"
 )
 
 var cache *Cache
 var cacheEnabled = true
 var verbose = true
 var logger *log.Logger
+var parser = gofeed.NewParser()
 
 func main() {
 
@@ -68,20 +71,19 @@ func handlePresos(w http.ResponseWriter, r *http.Request) {
 	presoJSON, err := cache.Get("presos")
 
 	if err != nil {
-		presoXML, err := get("https://speakerdeck.com/tpryan.atom")
-		if err != nil {
-			writeError(w, err)
+
+		f, err := parser.ParseURL("https://speakerdeck.com/tpryan.atom")
+
+		content := Content{}
+
+		if err := content.LoadFeed(f); err != nil {
+			writeError(w, fmt.Errorf("error converting to content: %s", err))
+			return
 		}
 
-		var f Feed
-		if err := xml.Unmarshal(presoXML, &f); err != nil {
-			writeError(w, err)
-		}
-
-		presoJSON, err = f.JSON()
-		err = cache.Save("presos", presoJSON)
+		presoJSON, err = content.JSONandCache(cache, "presos")
 		if err != nil {
-			logger.Printf("error saving to cache: %s", err)
+			writeError(w, err)
 		}
 
 	}
@@ -95,15 +97,26 @@ func handleRepos(w http.ResponseWriter, r *http.Request) {
 	repoJSON, err := cache.Get("github")
 
 	if err != nil {
-		temp, err := get("https://api.github.com/users/tpryan/repos?sort=pushed")
+
+		client := github.NewClient(nil)
+		opt := &github.RepositoryListOptions{Type: "public", Sort: "pushed"}
+		f, _, err := client.Repositories.List(context.Background(), "tpryan", opt)
+
+		if err != nil {
+			writeError(w, fmt.Errorf("error retrieving repos: %s", err))
+			return
+		}
+
+		content := Content{}
+
+		if err := content.LoadGithub(f); err != nil {
+			writeError(w, fmt.Errorf("error converting to content: %s", err))
+			return
+		}
+
+		repoJSON, err = content.JSONandCache(cache, "github")
 		if err != nil {
 			writeError(w, err)
-		}
-		repoJSON = string(temp)
-
-		err = cache.Save("github", repoJSON)
-		if err != nil {
-			logger.Printf("error saving to cache: %s", err)
 		}
 	}
 
@@ -116,46 +129,29 @@ func handlePosts(w http.ResponseWriter, r *http.Request) {
 	postJSON, err := cache.Get("blog")
 
 	if err != nil {
-		postXML, err := get("https://tpryan.blog/feed/")
+		f, err := parser.ParseURL("https://tpryan.blog/feed/")
+
+		content := Content{}
+
+		if err := content.LoadFeed(f); err != nil {
+			writeError(w, fmt.Errorf("error converting to content: %s", err))
+			return
+		}
+
+		postJSON, err = content.JSONandCache(cache, "blog")
 		if err != nil {
 			writeError(w, err)
 		}
 
-		var f RssFeed
-		if err := xml.Unmarshal(postXML, &f); err != nil {
-			writeError(w, err)
-		}
-		postJSON, err = f.JSON()
-
-		err = cache.Save("blog", postJSON)
-		if err != nil {
-			logger.Printf("error saving to cache: %s", err)
-		}
 	}
 
 	writeResponse(w, http.StatusOK, postJSON)
 	return
-
 }
 
 func handleHealth(w http.ResponseWriter, r *http.Request) {
 	writeResponse(w, http.StatusOK, "ok")
 	return
-}
-
-func get(url string) ([]byte, error) {
-
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	return body, nil
 }
 
 func writeResponse(w http.ResponseWriter, code int, msg string) {
@@ -170,73 +166,6 @@ func writeError(w http.ResponseWriter, err error) {
 	msg := fmt.Sprintf("{\"err\":\"%s\"}", err)
 	logger.Printf("error serving content %s: ", err)
 	writeResponse(w, http.StatusInternalServerError, msg)
-}
-
-// Feed is a representation of a Atom feed
-type Feed struct {
-	Entries []Entry `json:"entries" xml:"entry"`
-}
-
-// JSON Returns the given Feed struct as a JSON string
-func (f Feed) JSON() (string, error) {
-
-	items := []Item{}
-
-	for _, v := range f.Entries {
-		item := Item{}
-		item.Title = v.Title
-		item.Published = v.Published
-		item.Link = v.Link.HREF
-		item.Content = v.Content
-		items = append(items, item)
-	}
-
-	b, err := json.Marshal(items)
-	if err != nil {
-		return "", fmt.Errorf("could not marshal json for response: %s", err)
-	}
-
-	return string(b), nil
-}
-
-// Entry are individual items in a Feed
-type Entry struct {
-	Title     string `json:"title" xml:"title"`
-	Content   string `json:"content" xml:"content"`
-	Published string `json:"published" xml:"published"`
-	Link      struct {
-		HREF string `json:"href" xml:"href,attr"`
-	} `json:"link" xml:"link"`
-	Author struct {
-		Name string `json:"name" xml:"name"`
-	} `json:"author" xml:"author"`
-}
-
-// RssFeed is a representation of a RSS feed
-type RssFeed struct {
-	Channel struct {
-		Items []Item `json:"items" xml:"item"`
-	} `json:"channel" xml:"channel"`
-}
-
-// JSON Returns the given DFResponse struct as a JSON string
-func (f RssFeed) JSON() (string, error) {
-	items := f.Channel.Items
-
-	b, err := json.Marshal(items)
-	if err != nil {
-		return "", fmt.Errorf("could not marshal json for response: %s", err)
-	}
-
-	return string(b), nil
-}
-
-// Item are individual entries in an RSSFeed
-type Item struct {
-	Title     string `json:"title" xml:"title"`
-	Content   string `json:"content" xml:"description"`
-	Published string `json:"published" xml:"pubDate"`
-	Link      string `json:"link" xml:"link"`
 }
 
 // RedisPool is an interface that allows us to swap in an mock for testing cache
@@ -323,4 +252,104 @@ func (c *Cache) Get(key string) (string, error) {
 	c.log("Successfully retrieved content from cache as key: %s", key)
 
 	return s, nil
+}
+
+// Content is a collection of nuggets with the
+type Content struct {
+	Nuggets []Nugget `json:"nuggets"`
+	Cached  bool     `json:"cached"`
+}
+
+// Nugget is a what goes on the front page of the website.
+type Nugget struct {
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	URL         string    `json:"url"`
+	Timestamp   time.Time `json:"timestamp"`
+}
+
+// JSON Returns the given content struct as a JSON string
+func (c Content) JSON() (string, error) {
+
+	b, err := json.Marshal(c)
+	if err != nil {
+		return "", fmt.Errorf("could not marshal json for response: %s", err)
+	}
+
+	return string(b), nil
+}
+
+// JSONandCache Caches and Returns the given content struct as a JSON string
+func (c *Content) JSONandCache(cache *Cache, key string) (string, error) {
+	outJSON, err := c.JSON()
+	if err != nil {
+		return "", fmt.Errorf("error converting content to json: %s", err)
+	}
+
+	c.Cached = true
+	saveJSON, err := c.JSON()
+	if err != nil {
+		return "", fmt.Errorf("error converting content to savable json: %s", err)
+	}
+
+	if err := cache.Save(key, saveJSON); err != nil {
+		cache.logger.Printf("error saving to cache: %s", err)
+	}
+
+	return outJSON, nil
+}
+
+// LoadGithub takes a github response and loads it into content.
+func (c *Content) LoadGithub(g []*github.Repository) error {
+	nuggets := []Nugget{}
+
+	for _, v := range g {
+
+		n := Nugget{}
+		n.Title = v.GetName()
+		n.Timestamp = v.GetUpdatedAt().Time
+		n.URL = v.GetHTMLURL()
+		n.Description = v.GetDescription()
+		nuggets = append(nuggets, n)
+
+	}
+	c.Nuggets = nuggets
+
+	return nil
+}
+
+// LoadFeed takes a feed response and loads it into content.
+func (c *Content) LoadFeed(f *gofeed.Feed) error {
+
+	nuggets := []Nugget{}
+
+	for _, v := range f.Items {
+
+		var err error
+
+		n := Nugget{}
+		n.Title = v.Title
+		n.URL = v.Link
+
+		if f.FeedType == "atom" {
+			n.Description = v.Content
+			n.Timestamp, err = time.Parse("2006-1-2T15:04:05-07:00", v.Published)
+			if err != nil {
+				return err
+			}
+		}
+
+		if f.FeedType == "rss" {
+			n.Description = v.Description
+			n.Timestamp, err = time.Parse("Mon, 02 Jan 2006 15:04:05 -0700", v.Published)
+			if err != nil {
+				return err
+			}
+		}
+
+		nuggets = append(nuggets, n)
+	}
+
+	c.Nuggets = nuggets
+	return nil
 }
