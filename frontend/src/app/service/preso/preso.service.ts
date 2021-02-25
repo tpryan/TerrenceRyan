@@ -4,11 +4,12 @@ import { MessageService } from '../message/message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { Content, Nugget} from '../content/content.service'
 
 export class Preso {
   public title: string
   public link: string
-  public content: string
+  public description: string
   public published:Date
 }
 
@@ -27,8 +28,8 @@ export class PresoService {
     headers: new HttpHeaders({ 'Content-Type': 'application/atom+xml' })
   };
 
-  getPresos (): Observable<Preso[]> {
-    return this.http.get<Preso[]>(this.presoUrl)
+  getPresos (): Observable<Content> {
+    return this.http.get<Content>(this.presoUrl)
       .pipe(
         tap(_ => this.log('fetched repos'))
         // catchError(this.handleError<Repo[]>('getRepos', []))

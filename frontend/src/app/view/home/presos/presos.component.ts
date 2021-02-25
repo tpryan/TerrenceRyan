@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PresoService, Preso } from '../../../service/preso/preso.service';
+import { Nugget } from '../../../service/content/content.service';
 
 @Component({
   selector: 'app-presos',
@@ -8,13 +9,13 @@ import { PresoService, Preso } from '../../../service/preso/preso.service';
 })
 export class PresosComponent implements OnInit {
 
-  presos: Array<Preso> = [];
+  presos: Array<Nugget> = [];
 
   constructor(private presoService: PresoService) {} 
 
   getPresos(): void {
     this.presoService.getPresos().subscribe(
-        presos => this.presos =  presos.sort(compare).slice(-4, -1));
+        presos => this.presos =  presos.nuggets.sort(compare).slice(-4, -1));
   } 
 
   ngOnInit(): void {
@@ -23,11 +24,11 @@ export class PresosComponent implements OnInit {
 
 }
 
-function compare(a:Preso, b:Preso) {
-  if (a.published < b.published) {
+function compare(a:Nugget, b:Nugget) {
+  if (a.timestamp < b.timestamp) {
     return -1;
   }
-  if (a.published > b.published) {
+  if (a.timestamp > b.timestamp) {
     return 1;
   }
   // a must be equal to b

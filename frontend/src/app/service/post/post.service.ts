@@ -4,12 +4,14 @@ import { MessageService } from '../message/message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { Content, Nugget} from '../content/content.service'
 
 export class Post {
   public title: string
   public link: string
   public description: string
 }
+
 
 
 @Injectable({
@@ -27,8 +29,8 @@ export class PostService {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
-  getPosts (): Observable<Post[]> {
-    return this.http.get<Post[]>(this.postsUrl)
+  getPosts (): Observable<Content> {
+    return this.http.get<Content>(this.postsUrl)
       .pipe(
         tap(_ => this.log('fetched posts'))
         // catchError(this.handleError<Repo[]>('getRepos', []))

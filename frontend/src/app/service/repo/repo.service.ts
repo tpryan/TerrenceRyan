@@ -5,6 +5,7 @@ import { MessageService } from '../message/message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { Content, Nugget} from '../content/content.service'
 
 
 @Injectable({
@@ -23,11 +24,11 @@ export class RepoService {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
-  getRepos (): Observable<Repo[]> {
-    return this.http.get<Repo[]>(this.reposUrl)
+  getRepos (): Observable<Content> {
+    return this.http.get<Content>(this.reposUrl)
       .pipe(
         tap(_ => this.log('fetched repos'))
-        // catchError(this.handleError<Repo[]>('getRepos', []))
+        // catchError(this.handleError<Content>('getRepos', []))
       );
   }
 
