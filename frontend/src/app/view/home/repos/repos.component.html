@@ -2,7 +2,7 @@
     <h2><a href="https://github.com/tpryan">Code <span class="icon">&#62208;</span></a></h2>
     <div *ngFor="let nugget of repos">
         <article>
-            <h1><a href="{{nugget.link}}">{{nugget.title}}</a></h1> 
+            <h1><a href="{{nugget.url}}">{{nugget.title}}</a></h1> 
             <time>{{nugget.timestamp | date: 'MMMM d, yyyy'}}</time>
             <p>{{nugget.description}}</p>
         </article>

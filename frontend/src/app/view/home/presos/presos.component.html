@@ -2,7 +2,7 @@
     <h2><a href="https://speakerdeck.com/tpryan">Presentations <span class="icon">&#59160;</span></a></h2>
     <div *ngFor="let nugget of presos">
         <article class="preso">
-            <h1><a href='{{nugget.link}}'>{{nugget.title}}</a></h1> 
+            <h1><a href='{{nugget.url}}'>{{nugget.title}}</a></h1> 
             <time>{{nugget.timestamp | date: 'MMMM d, yyyy'}}</time>
             <p [innerHTML]='nugget.description'></p>
         </article>
