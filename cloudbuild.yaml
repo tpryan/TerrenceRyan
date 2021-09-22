@@ -36,27 +36,16 @@ steps:
             'push', 
             'gcr.io/$PROJECT_ID/terrenceryan'
           ]
-
-
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
-    entrypoint: "gcloud"
+    entrypoint: "bash"
     args: [
-            'beta', 
-            'run', 
-            'deploy', 
-            'terrenceryan', 
-            '--image', 'gcr.io/$PROJECT_ID/terrenceryan:latest', 
-            '--region', 'us-central1',
-            '--platform', 
-            'managed', 
-            '--quiet',
-            '--vpc-connector','redisconnector', 
-            '--set-env-vars','REDISHOST=$$REDISIP,REDISPORT=6379'
-          ]
-    secretEnv: ['REDISIP']      
+            '-c',
+            'gcloud beta run deploy terrenceryan --image gcr.io/$PROJECT_ID/terrenceryan:latest --region us-central1 --platform managed --quiet --vpc-connector redisconnector --set-env-vars REDISHOST=$$REDISIP,REDISPORT=6379'
+    ]
+    secretEnv: ['REDISIP']
 availableSecrets:
   secretManager:
   - versionName: projects/terrenceryan-com/secrets/redisip/versions/latest
-    env: 'REDISIP'          
+    env: REDISIP          
 images:
   - gcr.io/$PROJECT_ID/terrenceryan
