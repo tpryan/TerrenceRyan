@@ -14,14 +14,15 @@ import (
 	"github.com/mmcdole/gofeed"
 )
 
-var cache *Cache
-var cacheEnabled = true
-var verbose = true
-var logger *log.Logger
-var parser = gofeed.NewParser()
+var (
+	cache        *Cache
+	cacheEnabled = true
+	verbose      = true
+	logger       *log.Logger
+	parser       = gofeed.NewParser()
+)
 
 func main() {
-
 	logger = log.New(os.Stderr, "MAIN : ", log.Ldate|log.Ltime|log.Lmsgprefix)
 
 	port := os.Getenv("PORT")
@@ -36,7 +37,7 @@ func main() {
 	var err error
 	cache, err = NewCache(redisHost, redisPort, cacheEnabled, verbose)
 	if err != nil {
-		logger.Fatal(err)
+		logger.Fatalf("failed to initiate new cache: %s", err)
 	}
 
 	http.Handle("/", http.FileServer(http.Dir("./static")))
@@ -67,9 +68,7 @@ func main() {
 }
 
 func handlePresos(w http.ResponseWriter, r *http.Request) {
-
 	presoJSON, err := cache.Get("presos")
-
 	if err != nil {
 
 		f, err := parser.ParseURL("https://speakerdeck.com/tpryan.atom")
@@ -93,15 +92,12 @@ func handlePresos(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleRepos(w http.ResponseWriter, r *http.Request) {
-
 	repoJSON, err := cache.Get("github")
-
 	if err != nil {
 
 		client := github.NewClient(nil)
 		opt := &github.RepositoryListOptions{Type: "public", Sort: "pushed"}
 		f, _, err := client.Repositories.List(context.Background(), "tpryan", opt)
-
 		if err != nil {
 			writeError(w, fmt.Errorf("error retrieving repos: %s", err))
 			return
@@ -125,9 +121,7 @@ func handleRepos(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlePosts(w http.ResponseWriter, r *http.Request) {
-
 	postJSON, err := cache.Get("blog")
-
 	if err != nil {
 		f, err := parser.ParseURL("https://tpryan.blog/feed/")
 
@@ -270,7 +264,6 @@ type Nugget struct {
 
 // JSON Returns the given content struct as a JSON string
 func (c Content) JSON() (string, error) {
-
 	b, err := json.Marshal(c)
 	if err != nil {
 		return "", fmt.Errorf("could not marshal json for response: %s", err)
@@ -320,7 +313,6 @@ func (c *Content) LoadGithub(g []*github.Repository) error {
 
 // LoadFeed takes a feed response and loads it into content.
 func (c *Content) LoadFeed(f *gofeed.Feed) error {
-
 	nuggets := []Nugget{}
 
 	for _, v := range f.Items {
