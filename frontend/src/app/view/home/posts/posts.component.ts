@@ -13,7 +13,7 @@ export class PostsComponent implements OnInit {
   constructor(private postService: PostService) {} 
 
   getPosts(): void {
-    this.postService.getPosts().subscribe(posts => this.posts =  posts.slice(-4, -1));
+    this.postService.getPosts().subscribe(posts => { this.posts =  posts.nuggets.slice(-4, -1)});
   } 
 
   ngOnInit(): void {

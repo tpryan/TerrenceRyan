@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RepoService } from '../../../service/repo/repo.service';
 import { Repo } from '../../../service/repo/repo';
+import { Nugget } from '../../../service/content/content.service';
 
 
 
@@ -11,13 +12,13 @@ import { Repo } from '../../../service/repo/repo';
 })
 export class ReposComponent implements OnInit {
 
-  repos: Array<Repo> = [];
+  repos: Array<Nugget> = [];
 
   constructor(private repoService: RepoService) {} 
 
   getRepos(): void {
     this.repoService.getRepos()
-        .subscribe(repos => this.repos =  repos.slice(1, 6));
+        .subscribe(repos => this.repos =  repos.nuggets.slice(1, 6));
   }
     
 

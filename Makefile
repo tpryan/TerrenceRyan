@@ -89,7 +89,7 @@ dev: redis
 	go run main.go & \
 	cd $(BASEDIR)/frontend && ng serve --open )		
 
-backend: redis
+backend: clean redis
 	cd $(BASEDIR)/prod && \
 	export REDISHOST=127.0.0.1 && \
 	export REDISPORT=6379 && \
