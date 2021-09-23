@@ -1,10 +1,10 @@
 <div class="code">
     <h2><a href="https://github.com/tpryan">Code <span class="icon">&#62208;</span></a></h2>
-    <div *ngFor="let repo of repos">
+    <div *ngFor="let nugget of repos">
         <article>
-            <h1><a href="{{repo.svn_url}}">{{repo.name}}</a></h1> 
-            <time>{{repo.pushed_at | date: 'MMMM d, yyyy'}}</time>
-            <p>{{repo.description}}</p>
+            <h1><a href="{{nugget.url}}">{{nugget.title}}</a></h1> 
+            <time>{{nugget.timestamp | date: 'MMMM d, yyyy'}}</time>
+            <p>{{nugget.description}}</p>
         </article>
         </div>
     <p class="externalref">View more on <a href="https://github.com/tpryan">github.com</a>.</p>
