@@ -1,0 +1,11 @@
+steps:
+    - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+      entrypoint: "gcloud"
+      args: [
+            'functions', 
+            'deploy', 
+            'subscribeMailgun', 
+            '--trigger-topic', 'cloud-builds',
+            '--runtime', 'nodejs10',
+          ]
+

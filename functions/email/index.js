@@ -51,9 +51,11 @@ const createEmail = (build) => {
   const duration = humanizeDuration(new Date(build.finishTime) - new Date(build.startTime));
   
   
-  let msgHtml = `<p><a href="${build.logUrl}">Latest build</a> finished with status <span style="color: ${color}; font-weight: ${weight}">${build.status} </span>, in ${duration}.</p>
-                <p>View it here: <a href="https://${process.env.GCLOUD_PROJECT}.appspot.com">https://${process.env.GCLOUD_PROJECT}.appspot.com</a></p>
-                `;
+  let msgHtml = `<p><a href="${build.logUrl}">Latest build</a> finished with 
+                status <span style="color: ${color}; font-weight: ${weight}">
+                ${build.status} </span>, in ${duration}.</p>
+                <p>View it here: <a href="https://terrenceryan.com">
+                https://terrenceryan.com</a></p>`;
   
   
   const message = {
